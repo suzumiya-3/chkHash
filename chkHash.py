@@ -1,16 +1,27 @@
-import hashlib
+import sys,hashlib
 
 def read_chk(type):
     for chunk in iter(lambda: f.read(2048 * type.block_size), b''):
             type.update(chunk)
     return type
 
-while True:
-    files = input('Please select file: ')
-    if files == "":
-        continue
+args = sys.argv
 
-    for file in files.split(','):
+c = False
+
+while True:
+    if len(args) == 1:
+        files = input('Please select file: ')
+        if files == "":
+            continue
+        files = files.split(',')
+
+    else:
+        c = True
+        args.pop(0)
+        files = args
+
+    for file in files:
         with open(file, 'rb') as f:
 
             # md5
@@ -26,4 +37,7 @@ while True:
             sha512 = hashlib.sha512()
             hash_sha512 = read_chk(sha512).hexdigest()
 
-            print(f'md5: {hash_md5}\nsha1: {hash_sha1}\nsha256: {hash_sha256}\nsha512: {hash_sha512}\n')
+            print(f'md5: {hash_md5}\nsha1: {hash_sha1}\nsha256: {hash_sha256}\nsha512: {hash_sha512}')
+
+    if c:
+        break
